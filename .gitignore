@@ -1,0 +1,7 @@
+/.vscode
+/latest.log
+*test*
+/__pycache__
+/cell
+/rule
+/screenshots
