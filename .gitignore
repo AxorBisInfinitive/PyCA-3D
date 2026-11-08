@@ -1,7 +1,8 @@
-/.vscode
+/.vscode/
 /latest.log
 *test*
-/__pycache__
-/cell
-/rule
-/screenshots
+__pycache__/
+/cell/
+/rule/
+/screenshots/
+/venv/
