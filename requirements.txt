@@ -1,4 +1,5 @@
 numba==0.65.1
 numpy==2.4.6
+scipy==1.18.1 # numba 后端依赖
 Pillow==12.2.0
 PySDL2==0.9.17
