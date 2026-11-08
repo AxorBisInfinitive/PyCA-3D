@@ -30,7 +30,7 @@ class Rulizer:
     规则化器的基类。
 
     将规则整数转换为多维规则空间的转换器。
-    
+
     用于元胞自动机模拟，将整数规则转换为可执行的多维数组形式。
     """
 
@@ -46,7 +46,7 @@ class Rulizer:
             元胞自动机的维度，取值 1 ~ 3
         default: np.ndarray
             可选、技术性，会将 self.rule_space 赋值为 default
-        
+
         Raises
         ------
         ValueError
@@ -99,7 +99,7 @@ class Metatizer:
     元化器的基类。
 
     元胞自动机的容器和管理器。
-    
+
     维护元胞状态并提供迭代方法，支持多维元胞自动机模拟。
     """
 
@@ -116,7 +116,7 @@ class Metatizer:
         ----------
         size : list[int]
             空间尺寸
-        
+
         Examples
         --------
         >>> Metatizer([16, 16])
@@ -149,7 +149,7 @@ class Metatizer:
         - 使用周期边界条件 (wrap mode)
         - 通过 as_strided() 创建内存视图，避免数据复制
         - 将多维窗口展平以应用规则
-        
+
         Examples
         --------
         >>> meta = Metatizer([16, 16])
@@ -159,7 +159,7 @@ class Metatizer:
 
         padded: Any = self.module.pad(self.cell, 1, mode="wrap")
         windows: Any = self.as_strided_func(
-            padded, 
+            padded,
             shape=self.cell.shape + (3,) * self.ndim,
             strides=padded.strides * 2
         )
@@ -187,7 +187,7 @@ class Metatizer:
             报告日志的间隔迭代次数
         saving : bool
             是否存储并返回迭代时每刻元胞群的状态
-        
+
         Returns
         -------
         result : np.ndarray
@@ -267,7 +267,7 @@ class CellularAutomata:
         self.start_pos: list[int] = start_pos
         self.call_func: Callable = call_func
         self.default_rule_space: Any = default_rule_space
-    
+
     def run(self, mark: str = "") -> ResultType:
         tick_string: str = strftime(f"%Y-%m-%d-%H-%M-%S-{mark}", localtime())
 

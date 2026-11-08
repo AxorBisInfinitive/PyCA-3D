@@ -38,7 +38,7 @@ from shader import Vertex, Projection, Cutting, Map, rasterTriangle, normalize
 def remove(data: np.ndarray, tick: int):
     grid: np.ndarray = data[tick].copy()
     shape: Tuple[int, int, int] = grid.shape
-        
+
     for z in range(shape[2]):
         for y in range(shape[1]):
             for x in range(shape[0]):
@@ -103,7 +103,7 @@ def GetCube(cell: np.ndarray):
     scales: np.ndarray = np.ones((N, 3), dtype=np.float32)
     colors: np.ndarray = np.zeros((N, 3), dtype=np.uint8)
     max_z = max(np.max(positions[:, 2]) if N > 0 else 1, 1.0)
-    
+
     for i in range(N):
         z = positions[i, 2]
         t = z / max_z
@@ -160,7 +160,7 @@ cube_faces: np.ndarray = np.array([
 @njit(cache=True, fastmath=True)
 def GetFrame(
     cameraPos: np.ndarray, target: np.ndarray, cell: np.ndarray,
-    framebuffer: np.ndarray, zbuffer: np.ndarray, tmpEdge: np.ndarray, 
+    framebuffer: np.ndarray, zbuffer: np.ndarray, tmpEdge: np.ndarray,
     outTriangles: np.ndarray, outScreen: np.ndarray
 ):
     framebuffer[:, :, :] = 0.0
@@ -168,20 +168,20 @@ def GetFrame(
 
     positions, rotations, scales, colors = GetCube(cell)
     MVPbatch: np.ndarray = Vertex(P, cameraPos, target, up, scales, rotations, positions)
-    
+
     tri_vertices: np.ndarray = np.empty((3, 3), dtype=np.float32)
-    
+
     for index in range(positions.shape[0]):
         mvp: np.ndarray = MVPbatch[index]
         cube_color: np.ndarray = colors[index]
-        
+
         for face in cube_faces:
             tri_vertices[0] = cube_vertices[face[0]]
             tri_vertices[1] = cube_vertices[face[1]]
             tri_vertices[2] = cube_vertices[face[2]]
-            
+
             num_triangles: int = Cutting(tri_vertices, mvp, tmpEdge, outTriangles)
-            
+
             for tri_idx in range(num_triangles):
                 tri: np.ndarray = outTriangles[tri_idx]
                 Map(viewport, tri, outScreen)
@@ -218,7 +218,7 @@ def main():
 
     renderer = sd.SDL_CreateRenderer(
         window,
-        -1, 
+        -1,
         sd.SDL_RENDERER_ACCELERATED | sd.SDL_RENDERER_PRESENTVSYNC
     )
 
@@ -337,7 +337,7 @@ def main():
 
             keys = sd.SDL_GetKeyboardState(None)
             forward, right = movingVector(cameraPos, target, up)
-                        
+
             if keys[sd.SDL_SCANCODE_W]:
                 cameraPos = cameraPos + forward * strideRate
                 target = target + forward * strideRate

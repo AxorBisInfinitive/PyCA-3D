@@ -179,7 +179,7 @@ def clipEdge(p1: np.ndarray, p2: np.ndarray, plane: int, sign: float, out: np.nd
     else:
         denom: float = p2[3] - p1[3]
         t: float = -p1[3] / denom
-    
+
     t: float = max(0.0, min(1.0, t))
     out[0] = p1[0] + t * (p2[0] - p1[0])
     out[1] = p1[1] + t * (p2[1] - p1[1])
@@ -191,7 +191,7 @@ def clipPolygon(polygon: np.ndarray, plane: int, sign: float, tmpEdge: np.ndarra
     N: int = len(polygon)
     output: np.ndarray = np.empty((N + 1, 4), dtype=np.float32)
     count: int = 0
-    
+
     if plane == 0:
         axis: int = 0
     elif plane == 1:
@@ -200,7 +200,7 @@ def clipPolygon(polygon: np.ndarray, plane: int, sign: float, tmpEdge: np.ndarra
         axis = 2
     else:
         axis = -1
-    
+
     prev: np.ndarray = polygon[-1]
     if axis >= 0:
         if sign > 0:
@@ -209,10 +209,10 @@ def clipPolygon(polygon: np.ndarray, plane: int, sign: float, tmpEdge: np.ndarra
             prev_inside: bool = prev[axis] >= -prev[3]
     else:
         prev_inside: bool = prev[3] > 0
-    
+
     for index in range(N):
         curr: np.ndarray = polygon[index]
-        
+
         if axis >= 0:
             if sign > 0:
                 curr_inside: bool = curr[axis] <= curr[3]
@@ -220,7 +220,7 @@ def clipPolygon(polygon: np.ndarray, plane: int, sign: float, tmpEdge: np.ndarra
                 curr_inside: bool = curr[axis] >= -curr[3]
         else:
             curr_inside: bool = curr[3] > 0
-        
+
         if prev_inside and curr_inside:
             output[count] = curr
             count += 1
@@ -234,55 +234,55 @@ def clipPolygon(polygon: np.ndarray, plane: int, sign: float, tmpEdge: np.ndarra
             count += 1
             output[count] = curr
             count += 1
-        
+
         prev: np.ndarray = curr
         prev_inside: bool = curr_inside
-    
+
     return output[:count]
 
 @njit(cache=True, fastmath=True)
 def clipTriangle(
-    v0: np.ndarray, v1: np.ndarray, v2: np.ndarray, 
+    v0: np.ndarray, v1: np.ndarray, v2: np.ndarray,
     tmpEdge: np.ndarray, outTriangles: np.ndarray
 ) -> int:
     buffers: np.ndarray = np.empty((2, 8, 4), dtype=np.float32)
-    
+
     buffers[0, 0] = v0
     buffers[0, 1] = v1
     buffers[0, 2] = v2
     poly_len: int = 3
     src_idx: int = 0
     dst_idx: int = 1
-    
+
     planes: np.ndarray = np.array([
         (0, -1.0), (0, 1.0), (1, -1.0), (1, 1.0),
         (2, -1.0), (2, 1.0), (3, 0.0)
     ], dtype=np.float32)
-    
+
     for idx in range(7):
         plane: int = int(planes[idx, 0])
         sign: float = planes[idx, 1]
-        
+
         src: np.ndarray = buffers[src_idx, :poly_len, :]
         dst: np.ndarray = buffers[dst_idx]
-        
+
         new_poly: np.ndarray = clipPolygon(src, plane, sign, tmpEdge)
         poly_len = len(new_poly)
-        
+
         if poly_len < 3:
             return 0
-        
+
         dst[:poly_len] = new_poly
         src_idx, dst_idx = dst_idx, src_idx
-    
+
     num_triangles: int = poly_len - 2
     src: np.ndarray = buffers[src_idx, :poly_len, :]
-    
+
     for i in range(num_triangles):
         outTriangles[i, 0] = src[0]
         outTriangles[i, 1] = src[i + 1]
         outTriangles[i, 2] = src[i + 2]
-    
+
     return num_triangles
 
 @njit(cache=True, fastmath=True)
@@ -310,15 +310,15 @@ def Map(
     vy: float = viewPort[1]
     vw: float = viewPort[2]
     vh: float = viewPort[3]
-    
+
     for index in range(3):
         w: float = cuttedVector[index, 3]
         inv_w: float = 1.0 / w
-        
+
         x_ndc: float = cuttedVector[index, 0] * inv_w
         y_ndc: float = cuttedVector[index, 1] * inv_w
         z_ndc: float = cuttedVector[index, 2] * inv_w
-        
+
         outScreen[index, 0] = (x_ndc + 1.0) * 0.5 * vw + vx
         outScreen[index, 1] = (1.0 - y_ndc) * 0.5 * vh + vy
         outScreen[index, 2] = (z_ndc + 1.0) * 0.5
@@ -391,15 +391,15 @@ def rasterTriangle(
                 alpha: float = w12 * inv_area
                 beta: float = w20 * inv_area
                 gamma: float = w01 * inv_area
-                
+
                 inv_w: float = alpha * inv_w0 + beta * inv_w1 + gamma * inv_w2
                 z_num: float = alpha * z0_inv + beta * z1_inv + gamma * z2_inv
                 z: float = z_num / inv_w
-                
+
                 if z < zbuffer[y, x]:
                     zbuffer[y, x] = z
                     framebuffer[y, x] = color
-            
+
             w01 += A01
             w12 += A12
             w20 += A20

@@ -36,7 +36,7 @@ pip install cupy
 在目录中运行命令：
 
 ```bash
-python main.py
+python src/main.py
 ```
 
 ---
