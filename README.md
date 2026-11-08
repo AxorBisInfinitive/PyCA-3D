@@ -1,9 +1,11 @@
 # PyCA-3D
+
 基于 Numpy 和 SDL2 制作的软渲染器，用于浏览 Cellular Automata。
 
 代码基于：
-- [**InfGithub/CellularAutomata**](https://github.com/InfGithub/CellularAutomata)
-- [**InfGithub/PySDL2_Basic**](https://github.com/InfGithub/PySDL2_Basic)
+
+- [**AxorBisInfinitive/CellularAutomata**](https://github.com/AxorBisInfinitive/CellularAutomata)
+- [**AxorBisInfinitive/PySDL2_Basic**](https://github.com/AxorBisInfinitive/PySDL2_Basic)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
@@ -19,7 +21,7 @@
 pip install -r requirements.txt
 ```
 
-若环境中安装了**CUDA**，也可继续运行命令：
+若环境中安装了 **CUDA**，也可继续运行命令：
 
 ```bash
 pip install cupy
